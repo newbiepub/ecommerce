@@ -1,0 +1,105 @@
+html, body, #root, [data-reactroot] {
+    width: 100%;
+    height: 100%;
+}
+
+body a {
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+}
+
+.pink {
+    background: pink;
+}
+
+.green {
+    background: green;
+}
+
+.yellow {
+    background: yellow;
+}
+
+.purple {
+    background: purple;
+}
+
+.header-top {
+    height: 60px;
+    background: #444444;
+    box-shadow: 0px 2px 5px 5px #e5e5e5;
+    margin-bottom: 20px;
+}
+
+.flex-row {
+    height: 100%;
+}
+
+.flex-nav-item {
+    height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    transition: width 0.5s ease;
+    -webkit-transition:  width 0.5s ease;
+    -o-transition:  width 0.5s ease;
+    -ms-transition:  width 0.5s ease;
+    -moz-transition:  width 0.5s ease;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+    padding: 0px;
+}
+
+.nav-social-icon {
+    margin-left: 10px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: #307fff;
+    box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.35);
+}
+
+.flex-nav-item li {
+    list-style: none;
+}
+
+.flex-nav-item li.nav-wrapper:nth-last-child(1) {
+    border-right-width: 0px;
+}
+
+.flex-nav-item li.nav-wrapper {
+    padding: 0px 5px;
+    border-right: #e5e5e5 1px solid;
+}
+
+.flex-nav-item a, .flex-nav-item a:hover {
+    text-decoration: none;
+}
+
+.flex-nav-item a {
+    font-family: 'Raleway', sans-serif;
+    color: #e5e5e5
+}
+
+#loader2{
+    margin:20px auto;
+    border:8px solid rgba(255,255,255,0);
+    border-top:8px solid rgba(0,0,255,1.0);
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    animation:spin_2 1s linear infinite;
+}
+@keyframes spin_2{
+    0%{transform: rotate(0deg);}
+    100%{transform: rotate(360deg);}
+}

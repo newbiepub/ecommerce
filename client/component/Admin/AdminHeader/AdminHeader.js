@@ -97,7 +97,7 @@ class AdminHeader extends React.Component {
             <header className="header fixed-top clearfix">
                 <div className="brand">
                     <Link to='/admin' className="logo">
-                        VISITORS
+                        ADMIN
                     </Link>
                     <div className="sidebar-toggle-box">
                         <div className="fa fa-bars"/>

@@ -37,7 +37,7 @@ app.use(
 );
 
 //morgan
-app.use(morgan('combined'));
+//app.use(morgan('combined'));
 
 // enable cookie
 app.use(cookieParser());

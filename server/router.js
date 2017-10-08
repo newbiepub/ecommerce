@@ -10,10 +10,11 @@ import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 import Home from "../client/component/Home/home";
 import passport from "passport";
-import {findOneUser} from "./lib/controller/User";
+import {findOneUser, getCurrentUser} from "./lib/controller/User";
 import passwordHash from "password-hash";
 import * as _ from "lodash";
-import {createAuthToken} from "./lib/controller/AccessToken";
+import {checkAuthAdmin, checkAuthUser, createAuthToken} from "./lib/controller/AccessToken";
+import AdminHome from "../client/component/Admin/AdminHome/AdminHome";
 
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -21,7 +22,7 @@ passport.use(new LocalStrategy(
     function (username, password, done) {
         findOneUser({emails: username}).then((user) => {
             let passwordVerified = passwordHash.verify(password, user.password);
-            if(passwordVerified) {
+            if (passwordVerified) {
                 createAuthToken(user._id).then(token => {
                     done(null, token);
                 }).catch(e => {
@@ -63,12 +64,33 @@ function renderStatic(req) {
     return {content, context};
 }
 
-app.get("/api", (req, res, next) => {
-    if (req.query.access_token != undefined) {
-        next();
-    } else {
+app.use("/api", async (req, res, next) => {
+    try {
+        if (req.query.access_token != undefined) {
+            let accessToken = checkAuthUser(req.query.access_token);
+            if(accessToken != undefined) {
+                next();
+            } else {
+                console.log("WARN - AccessToken not found");
+                throw new Error ("AccessToken not found");
+            }
+        } else {
+            throw new Error("Unauthorized");
+        }
+    } catch (e) {
         res.statusCode = 401;
-        res.json({error: {message: "Unauthorized"}});
+        res.json({error: {message: "Unauthorized"}, redirectUrl: "/admin"});
+    }
+});
+
+app.get("/api/currentUser", async (req, res, next) => {
+    try {
+        let currentUser = await getCurrentUser(req.query.access_token);
+        res.statusCode = 200;
+        res.json({user: currentUser});
+    } catch(e) {
+        res.statusCode = 401;
+        res.json({error: {message: e.message}, redirectUrl: "/admin"});
     }
 });
 
@@ -90,12 +112,30 @@ app.route("/login")
         })(req, res, next)
     });
 
+app.use("/admin", async (req, res, next) => {
+    try {
+        let token = await checkAuthAdmin(req.cookies.authToken);
+        if (token) {
+            if (!req.user) {
+                next();
+            } else {
+                res.redirect("/dashboard")
+            }
+        } else {
+            req.logOut();
+            next();
+        }
+    } catch (e) {
+        req.logOut();
+        next();
+    }
+});
 
 app.get('/admin', (req, res, next) => {
-    if(req.user) {
+    if (req.user) {
         res.redirect("/dashboard")
     } else {
-        const { content, context } = renderStatic(req);
+        const {content, context} = renderStatic(req);
         res.render("index.html", {
             title: "Admin Page",
             content,
@@ -113,7 +153,7 @@ app.get('/admin', (req, res, next) => {
 
 app.post('/admin/login', (req, res, next) => {
     passport.authenticate('local', (err, user) => {
-        if(err) {
+        if (err) {
             res.statusCode = 401;
             res.json({error: {message: "Unauthorized"}});
         } else {
@@ -124,7 +164,7 @@ app.post('/admin/login', (req, res, next) => {
             };
             res.cookie('authToken', user.access_token, options); // options is optional
             req.logIn(user, (err) => {
-                if(err) {
+                if (err) {
                     res.statusCode = 401;
                     res.json({error: {message: "Oops !! Login Failed"}});
                 } else {
@@ -135,30 +175,45 @@ app.post('/admin/login', (req, res, next) => {
     })(req, res, next)
 });
 
-app.use("/dashboard", (req, res, next) => {
-    console.log(req.user);
-    if(req.user) {
-        next();
-    } else {
+app.use("/dashboard", async (req, res, next) => {
+    try {
+        let token = await checkAuthAdmin(req.cookies.authToken);
+        if (token) {
+            if (req.user) {
+                next();
+            } else {
+                res.redirect("/admin")
+            }
+        } else {
+            res.redirect("/admin")
+        }
+    } catch (e) {
+        req.logOut();
         res.redirect("/admin")
     }
 });
 
 app.route('/dashboard')
-    .get((req, res, next) => {
-        const { content, context } = renderStatic(req);
-        res.render("index.html", {
-            title: "Dashboard",
-            content,
-            data: initialData(store),
-            csrfToken: req.csrfToken(),
-            adminStyle: [
-                "/static/styles/adminStyle.css",
-                '/static/styles/adminStyleResponsive.css',
-                '/static/css/morris.css',
-                'static/css/monthly.css'
-            ]
-        });
+    .get( async (req, res, next) => {
+        try {
+            const {content, context} = renderStatic(req);
+            let currentUser = await getCurrentUser(req.cookies.authToken);
+            await AdminHome.login(store, currentUser);
+            res.render("index.html", {
+                title: "Dashboard",
+                content,
+                data: initialData(store),
+                csrfToken: req.csrfToken(),
+                adminStyle: [
+                    "/static/styles/adminStyle.css",
+                    '/static/styles/adminStyleResponsive.css',
+                    '/static/css/morris.css',
+                    'static/css/monthly.css'
+                ]
+            });
+        } catch(e) {
+            res.redirect("/admin")
+        }
     });
 
 app.get("*", (req, res, next) => {

@@ -9,6 +9,7 @@ const UserSchema = new Schema({
     username: {type: String},
     password: {type: String, required: true},
     profile: {type: Object},
+    roles: {type: Array, required: true},
     createdAt: {type: String, default: new Date().toISOString()}
 });
 

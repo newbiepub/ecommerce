@@ -28,6 +28,7 @@ class AdminLogin extends React.Component {
         })
             .done((response) => {
                 this.setState({isLogin: false});
+                console.log(response.redirectUrl);
                 window.location = response.redirectUrl;
             })
     }

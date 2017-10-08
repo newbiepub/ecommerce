@@ -39,21 +39,33 @@ class AdminSidebar extends React.Component {
                                 </a>
                             </li>
 
-                            <li className="sub-menu">
-                                <a href="javascript:;">
-                                    <i className="fa fa-book"></i>
-                                    <span>UI Elements</span>
-                                </a>
-                                <ul className="sub" style={{display: "block"}}>
-                                    <li><a href="typography.html">Typography</a></li>
-                                    <li><a href="glyphicon.html">glyphicon</a></li>
-                                    <li><a href="grids.html">Grids</a></li>
-                                </ul>
-                            </li>
+                            <AdminSidebarSubMenu {...this.props}/>
                         </ul>
                     </div>
                 </div>
             </aside>
+        )
+    }
+}
+
+class AdminSidebarSubMenu extends React.Component {
+    constructor (props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <li className="sub-menu">
+                <a href="javascript:;">
+                    <i className="fa fa-book"></i>
+                    <span>UI Elements</span>
+                </a>
+                <ul className="sub" style={{display: "block"}}>
+                    <li><a href="typography.html">Typography</a></li>
+                    <li><a href="glyphicon.html">glyphicon</a></li>
+                    <li><a href="grids.html">Grids</a></li>
+                </ul>
+            </li>
         )
     }
 }

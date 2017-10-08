@@ -13,8 +13,8 @@ const randomString = () => {
 };
 
 const AccessTokenSchema = new Schema({
-    access_token: {type: String, required: true, default: CryptoJS.HmacSHA1(randomString(), "production")},
-    refresh_token: {type: String, required: true, default: CryptoJS.HmacSHA1(randomString(), "production")},
+    access_token: {type: String, default: CryptoJS.HmacSHA1(randomString(), "production")},
+    refresh_token: {type: String, default: CryptoJS.HmacSHA1(randomString(), "production")},
     ttl: {type: Number, default: ttl()},
     createdAt: {type: String, default: new Date()},
     userId: {type: String, required: true}

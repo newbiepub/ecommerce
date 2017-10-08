@@ -49,7 +49,7 @@ passport.deserializeUser(function (user, done) {
 const store = createStore(appReducers, applyMiddleware(thunk));
 
 const initialData = (store) => {
-    return `<script>window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}</script>`
+    return `<script type="text/javascript">window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}</script>`
 };
 
 function renderStatic(req) {

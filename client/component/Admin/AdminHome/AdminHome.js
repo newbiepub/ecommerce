@@ -3,6 +3,7 @@ import {Link, Redirect} from "react-router-dom";
 import AdminHeader from "../AdminHeader/AdminHeader";
 import AdminSidebar from "../AdminSidebar/AdminSidebar";
 import {login} from "../../../action/account";
+import { connect } from "react-redux"
 
 class AdminHome extends React.Component {
     constructor(props) {
@@ -19,8 +20,8 @@ class AdminHome extends React.Component {
         if(isExact) {
             return (
                 <section id="container">
-                    <AdminHeader/>
-                    <AdminSidebar/>
+                    <AdminHeader {...this.props}/>
+                    <AdminSidebar {...this.props}/>
                 </section>
             )
         } else {
@@ -31,4 +32,10 @@ class AdminHome extends React.Component {
     }
 }
 
-export default AdminHome;
+const mapStateToProps = (state) => {
+    return {
+        account: state.account
+    }
+};
+
+export default connect(mapStateToProps, null) (AdminHome);

@@ -73,9 +73,9 @@ const jQueryInit = () => {
             el.slideUp(200);
         } else {
             $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-            el.slideDown(200); }
+            el.slideDown(200);
+        }
     });
-
 
 
     $('.panel .tools .fa-times').click(function () {
@@ -86,54 +86,71 @@ const jQueryInit = () => {
 class AdminHeader extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            user: {}
+        }
     }
 
     componentDidMount() {
         jQueryInit();
+        let {account} = this.props;
+        this.setState({user: account.user});
+    }
+
+    getProfileName() {
+        try {
+            return this.state.user.profile.name;
+        } catch (e) {
+            return ""
+        }
     }
 
     render() {
-        return (
-            <header className="header fixed-top clearfix">
-                <div className="brand">
-                    <Link to='/admin' className="logo">
-                        ADMIN
-                    </Link>
-                    <div className="sidebar-toggle-box">
-                        <div className="fa fa-bars"/>
+        try {
+            return (
+                <header className="header fixed-top clearfix">
+                    <div className="brand">
+                        <Link to='/admin' className="logo">
+                            ADMIN
+                        </Link>
+                        <div className="sidebar-toggle-box">
+                            <div className="fa fa-bars"/>
+                        </div>
                     </div>
-                </div>
-                <div className="nav notify-row" id="top_menu">
-                    <ul className="nav top-menu">
-                        <li className="dropdown"></li>
-                        <li id="header_inbox_bar" className="dropdown"></li>
-                        <li id="header_notification_bar" className="dropdown"></li>
-                    </ul>
-                </div>
-                <AdminHeaderNotification/>
-                <div className="top-nav clearfix">
+                    <div className="nav notify-row" id="top_menu">
+                        <ul className="nav top-menu">
+                            <li className="dropdown"></li>
+                            <li id="header_inbox_bar" className="dropdown"></li>
+                            <li id="header_notification_bar" className="dropdown"></li>
+                        </ul>
+                    </div>
+                    <AdminHeaderNotification/>
+                    <div className="top-nav clearfix">
 
-                    <ul className="nav pull-right top-menu">
-                        <li>
-                            <input type="text" className="form-control search" placeholder=" Search"/>
-                        </li>
+                        <ul className="nav pull-right top-menu">
+                            <li>
+                                <input type="text" className="form-control search" placeholder=" Search"/>
+                            </li>
 
-                        <li className="dropdown">
-                            <a data-toggle="dropdown" className="dropdown-toggle" href="#">
-                                <img alt="" src="http://localhost:3000/static/images/2.png"/>
-                                <span className="username">John Doe</span>
-                                <b className="caret"></b>
-                            </a>
-                            <ul className="dropdown-menu extended logout">
-                                <li><Link to="/admin"><i className=" fa fa-suitcase"></i>Profile</Link></li>
-                                <li><Link to="/admin"><i className="fa fa-cog"></i> Settings</Link></li>
-                                <li><Link to="/admin"><i className="fa fa-key"></i> Log Out</Link></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </header>
-        )
+                            <li className="dropdown">
+                                <a data-toggle="dropdown" className="dropdown-toggle" href="#">
+                                    <img alt="" src="http://localhost:3000/static/images/2.png"/>
+                                    <span className="username">{this.getProfileName()}</span>
+                                    <b className="caret"></b>
+                                </a>
+                                <ul className="dropdown-menu extended logout">
+                                    <li><Link to="/admin"><i className=" fa fa-suitcase"></i>Profile</Link></li>
+                                    <li><Link to="/admin"><i className="fa fa-cog"></i> Settings</Link></li>
+                                    <li><Link to="/admin"><i className="fa fa-key"></i> Log Out</Link></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </header>
+            )
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
 

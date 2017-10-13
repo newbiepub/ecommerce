@@ -216,10 +216,14 @@ app.route('/dashboard')
         }
     });
 
-app.get("*", (req, res, next) => {
+const notFound = (req, res, next) => {
     const {content, context} = renderStatic(req);
     res.render("index.html", {title: "404 Not Found", content, data: initialData(store), csrfToken: req.csrfToken()});
-})
+};
+
+app.get("/admin/*", notFound);
+app.get('/dashboard/*', notFound);
+app.get("*", notFound);
 
 
 export default app;
